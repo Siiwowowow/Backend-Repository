@@ -9,3 +9,7 @@ enum UserStatus {
   BlOCKED
   DELETED
 }
+enum Gender {
+  MALE  
+  FEMALE
+}
