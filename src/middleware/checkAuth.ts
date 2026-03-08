@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from "express";
 import status from "http-status";
+
+import { envVars } from "../config/env";
 import { Role, UserStatus } from "../generated/prisma/enums";
 import { CookieUtils } from "../app/utils/cookie";
 import { prisma } from "../app/lib/prisma";
 import AppError from "../app/errorHelpers/AppError";
 import { jwtUtils } from "../app/utils/jwt";
-import { envVars } from "../config/env";
 
 
 export const checkAuth = (...authRoles: Role[]) => async (req: Request, res: Response, next: NextFunction) => {
@@ -60,6 +61,12 @@ export const checkAuth = (...authRoles: Role[]) => async (req: Request, res: Res
 
                 if (authRoles.length > 0 && !authRoles.includes(user.role)) {
                     throw new AppError(status.FORBIDDEN, 'Forbidden access! You do not have permission to access this resource.');
+                }
+
+                req.user = {
+                    userId : user.id,
+                    role : user.role,
+                    email : user.email,
                 }
             }
 
